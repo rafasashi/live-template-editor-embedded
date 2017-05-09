@@ -280,9 +280,9 @@ class LTPLE_Embedded {
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_styles' ), 10 );
 		add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_scripts' ), 10 );
 
-		add_action( 'wp_head', array( $this, 'get_header') );
-		add_filter( 'wp_nav_menu', array( $this, 'get_menu' ), 10, 2);
-		add_action( 'wp_footer', array( $this, 'get_footer') );				
+		//add_action( 'wp_head', array( $this, 'get_header') );
+
+		//add_action( 'wp_footer', array( $this, 'get_footer') );				
 
 		// Custom default layer template
 
@@ -344,7 +344,15 @@ class LTPLE_Embedded {
 					
 					update_post_meta($layer_id, 'defaultLayerId', $defaultLayerId);
 				}
-				elseif( !empty($_GET['uli']) && is_numeric($_GET['uli']) && !empty($_GET['ulk']) && $_GET['ulk'] == md5('userLayerId'.$_GET['uli']) ){
+				elseif( !empty($_GET['uli']) && is_numeric($_GET['uli']) && !empty($_GET['ulk']) && !empty($_GET['ult']) && $_GET['ulk'] == md5('userLayerId'.$_GET['uli'].$_GET['ult']) ){
+					
+					// update user Layer title
+
+					wp_update_post( array(
+					
+						'ID'           => $layer_id,
+						'post_title'   => $_GET['ult'],
+					));					
 					
 					// update user Layer Id
 					
@@ -382,6 +390,23 @@ class LTPLE_Embedded {
 
 		if($this->user->loggedin && isset($_GET[LTPLE_EMBEDDED_PREFIX . 'edit'])){		
 
+			if( empty($post->ID) && !empty($_GET['p']) && !empty($_GET['post_type']) ){
+				
+				// insert draft
+				
+				$post_id = wp_insert_post(array(
+					
+					'ID'    		=> $_GET['p'],
+					'post_title'    => '',
+					'post_content'  => '',
+					'post_type'  	=> $_GET['post_type'],
+					'post_status'   => 'draft',
+					'post_author'   => $this->user->ID,
+				));
+				
+				$post = get_post($post_id);
+			}
+		
 			if( current_user_can( 'edit_post', $post->ID ) ){
 				
 				// get user layer id
@@ -397,7 +422,8 @@ class LTPLE_Embedded {
 				$this->embedded_url = add_query_arg( array(
 				
 					'uri' 		=> ( $this->userLayerId > 0 ? $this->userLayerId : $this->defaultLayerId ),
-					'le' 		=> urlencode($post->guid),
+					'le' 		=> urlencode( $this->urls->home . '/?p=' . $post->ID ),
+					'title' 	=> urlencode( $post->post_title ),
 					'output' 	=> 'embedded',
 					
 				), LTPLE_EMBEDDED_EDITOR_URL );					
@@ -405,7 +431,7 @@ class LTPLE_Embedded {
 				$template_path = $this->views . $this->_dev . '/editor.php';
 			}
 		}
-		elseif(is_single()){
+		elseif( is_single() || is_page() ){
 
 			// get user layer id
 					
@@ -609,10 +635,7 @@ class LTPLE_Embedded {
 	
 		wp_register_style( $this->_token . '-frontend', esc_url( $this->assets_url ) . 'css/frontend.css', array(), $this->_version );
 		wp_enqueue_style( $this->_token . '-frontend' );
-	
-		wp_register_style( $this->_token . '-bootstrap-table', esc_url( $this->assets_url ) . 'css/bootstrap-table.min.css', array(), $this->_version );
-		wp_enqueue_style( $this->_token . '-bootstrap-table' );	
-		
+
 	} // End enqueue_styles ()
 
 	/**
@@ -623,13 +646,10 @@ class LTPLE_Embedded {
 	 */
 	public function enqueue_scripts () {
 		
-		wp_enqueue_script('jquery-ui-dialog');
+		//wp_enqueue_script('jquery-ui-dialog');
 		
 		wp_register_script( $this->_token . '-frontend', esc_url( $this->assets_url ) . 'js/frontend' . $this->script_suffix . '.js', array( 'jquery' ), $this->_version );
 		wp_enqueue_script( $this->_token . '-frontend' );
-		
-		wp_register_script($this->_token . '-lazyload', esc_url( $this->assets_url ) . 'js/lazyload.min.js', array( 'jquery' ), $this->_version);
-		wp_enqueue_script( $this->_token . '-lazyload' );	
 
 	} // End enqueue_scripts ()
 
@@ -645,9 +665,6 @@ class LTPLE_Embedded {
 		wp_register_style( $this->_token . '-admin', esc_url( $this->assets_url ) . 'css/admin.css', array(), $this->_version );
 		wp_enqueue_style( $this->_token . '-admin' );
 		
-		wp_register_style( $this->_token . '-bootstrap', esc_url( $this->assets_url ) . 'css/bootstrap.min.css', array(), $this->_version );
-		wp_enqueue_style( $this->_token . '-bootstrap' );	
-		
 	} // End admin_enqueue_styles ()
 
 	/**
@@ -658,16 +675,10 @@ class LTPLE_Embedded {
 	 */
 	public function admin_enqueue_scripts ( $hook = '' ) {
 		
-		wp_enqueue_script('jquery-ui-sortable');
+		//wp_enqueue_script('jquery-ui-sortable');
 		
 		wp_register_script( $this->_token . '-admin', esc_url( $this->assets_url ) . 'js/admin' . $this->script_suffix . '.js', array( 'jquery' ), $this->_version );
 		wp_enqueue_script( $this->_token . '-admin' );
-
-		//wp_register_script($this->_token . '-bootstrap', esc_url( $this->assets_url ) . 'js/bootstrap.min.js', array( 'jquery' ), $this->_version);
-		//wp_enqueue_script( $this->_token . '-bootstrap' );		
-		
-		wp_register_script($this->_token . '-lazyload', esc_url( $this->assets_url ) . 'js/lazyload.min.js', array( 'jquery' ), $this->_version);
-		wp_enqueue_script( $this->_token . '-lazyload' );	
 		
 	} // End admin_enqueue_scripts ()
 
@@ -678,7 +689,7 @@ class LTPLE_Embedded {
 	 * @return  void
 	 */
 	public function load_localisation () {
-		load_plugin_textdomain( 'live-template-editor-embedded', false, dirname( plugin_basename( $this->file ) ) . '/lang/' );
+		load_plugin_textdomain( LTPLE_EMBEDDED_SLUG, false, dirname( plugin_basename( $this->file ) ) . '/lang/' );
 	} // End load_localisation ()
 
 	/**
@@ -688,7 +699,7 @@ class LTPLE_Embedded {
 	 * @return  void
 	 */
 	public function load_plugin_textdomain() {
-	    $domain = 'live-template-editor-embedded';
+	    $domain = LTPLE_EMBEDDED_SLUG;
 
 	    $locale = apply_filters( 'plugin_locale', get_locale(), $domain );
 

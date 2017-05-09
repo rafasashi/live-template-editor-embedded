@@ -5,8 +5,6 @@
 
 	define('LTPLE_EMBEDDED_PREFIX' , 'ltple_');
 	
-	define('LTPLE_EMBEDDED_SLUG' , 'live-template-editor-embedded');
-	
 	define('LTPLE_EMBEDDED_TITLE' , 'Live Template Editor Embedded');
 	
 	define('LTPLE_EMBEDDED_SHORT' , 'Live Editor'); 

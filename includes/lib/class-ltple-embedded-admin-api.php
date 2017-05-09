@@ -204,20 +204,19 @@ class LTPLE_Embedded_Admin_API {
 			
 			case 'edit_layer':
 			
-				if( !empty($_GET['post']) ){
-					
-					global $post;
+				global $post;
+				
+				$url = add_query_arg( array(
+					'p' 		=> $post->ID,
+					'post_type' => $post->post_type,
+					LTPLE_EMBEDDED_PREFIX . 'edit' => '',
+				), $this->parent->urls->home . '/' );
 
-					$html .= '<a href="' . get_permalink($post) . '?' . LTPLE_EMBEDDED_PREFIX . 'edit" class="button button-primary button-hero">';
-							
-						$html .= 'Edit with ' . LTPLE_EMBEDDED_SHORT;
-							
-					$html .= '</a>';				
-				}
-				else{
-					
-					$html .= 'Publish a new post to start editing a template from the ' . LTPLE_EMBEDDED_SHORT . ' gallery.';
-				}
+				$html .= '<a href="' . $url . '" class="button button-primary button-hero">';
+						
+					$html .= 'Edit with ' . LTPLE_EMBEDDED_SHORT;
+						
+				$html .= '</a>';
 				
 			break;
 			
@@ -448,8 +447,8 @@ class LTPLE_Embedded_Admin_API {
 					$image_thumb = wp_get_attachment_thumb_url( $data );
 				}
 				$html .= '<img id="' . $option_name . '_preview" class="image_preview" src="' . $image_thumb . '" /><br/>' . "\n";
-				$html .= '<input id="' . $option_name . '_button" type="button" data-uploader_title="' . __( 'Upload an image' , 'live-template-editor-embedded' ) . '" data-uploader_button_text="' . __( 'Use image' , 'live-template-editor-embedded' ) . '" class="image_upload_button button" value="'. __( 'Upload new image' , 'live-template-editor-embedded' ) . '" />' . "\n";
-				$html .= '<input id="' . $option_name . '_delete" type="button" class="image_delete_button button" value="'. __( 'Remove image' , 'live-template-editor-embedded' ) . '" />' . "\n";
+				$html .= '<input id="' . $option_name . '_button" type="button" data-uploader_title="' . __( 'Upload an image' , LTPLE_EMBEDDED_SLUG ) . '" data-uploader_button_text="' . __( 'Use image' , LTPLE_EMBEDDED_SLUG ) . '" class="image_upload_button button" value="'. __( 'Upload new image' , LTPLE_EMBEDDED_SLUG ) . '" />' . "\n";
+				$html .= '<input id="' . $option_name . '_delete" type="button" class="image_delete_button button" value="'. __( 'Remove image' , LTPLE_EMBEDDED_SLUG ) . '" />' . "\n";
 				$html .= '<input id="' . $option_name . '" class="image_data_field" type="hidden" name="' . $option_name . '" value="' . $data . '"/><br/>' . "\n";
 			break;
 			

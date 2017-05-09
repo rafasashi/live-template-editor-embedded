@@ -73,15 +73,15 @@ class LTPLE_Embedded_Post_Type {
 			'name' => $this->plural,
 			'singular_name' => $this->single,
 			'name_admin_bar' => $this->single,
-			'add_new' => _x( 'Add New', $this->post_type , 'live-template-editor-embedded' ),
-			'add_new_item' => sprintf( __( 'Add New %s' , 'live-template-editor-embedded' ), $this->single ),
-			'edit_item' => sprintf( __( 'Edit %s' , 'live-template-editor-embedded' ), $this->single ),
-			'new_item' => sprintf( __( 'New %s' , 'live-template-editor-embedded' ), $this->single ),
-			'all_items' => sprintf( __( 'All %s' , 'live-template-editor-embedded' ), $this->plural ),
-			'view_item' => sprintf( __( 'View %s' , 'live-template-editor-embedded' ), $this->single ),
-			'search_items' => sprintf( __( 'Search %s' , 'live-template-editor-embedded' ), $this->plural ),
-			'not_found' =>  sprintf( __( 'No %s Found' , 'live-template-editor-embedded' ), $this->plural ),
-			'not_found_in_trash' => sprintf( __( 'No %s Found In Trash' , 'live-template-editor-embedded' ), $this->plural ),
+			'add_new' => _x( 'Add New', $this->post_type , LTPLE_EMBEDDED_SLUG ),
+			'add_new_item' => sprintf( __( 'Add New %s' , LTPLE_EMBEDDED_SLUG ), $this->single ),
+			'edit_item' => sprintf( __( 'Edit %s' , LTPLE_EMBEDDED_SLUG ), $this->single ),
+			'new_item' => sprintf( __( 'New %s' , LTPLE_EMBEDDED_SLUG ), $this->single ),
+			'all_items' => sprintf( __( 'All %s' , LTPLE_EMBEDDED_SLUG ), $this->plural ),
+			'view_item' => sprintf( __( 'View %s' , LTPLE_EMBEDDED_SLUG ), $this->single ),
+			'search_items' => sprintf( __( 'Search %s' , LTPLE_EMBEDDED_SLUG ), $this->plural ),
+			'not_found' =>  sprintf( __( 'No %s Found' , LTPLE_EMBEDDED_SLUG ), $this->plural ),
+			'not_found_in_trash' => sprintf( __( 'No %s Found In Trash' , LTPLE_EMBEDDED_SLUG ), $this->plural ),
 			'parent_item_colon' => sprintf( __( 'Parent %s' ), $this->single ),
 			'menu_name' => $this->plural,
 		);
@@ -138,16 +138,16 @@ class LTPLE_Embedded_Post_Type {
 
 	  $messages[ $this->post_type ] = array(
 	    0 => '',
-	    1 => sprintf( __( '%1$s updated. %2$sView %3$s%4$s.' , 'live-template-editor-embedded' ), $this->single, '<a href="' . esc_url( get_permalink( $post_ID ) ) . '">', $this->single, '</a>' ),
-	    2 => __( 'Custom field updated.' , 'live-template-editor-embedded' ),
-	    3 => __( 'Custom field deleted.' , 'live-template-editor-embedded' ),
-	    4 => sprintf( __( '%1$s updated.' , 'live-template-editor-embedded' ), $this->single ),
-	    5 => isset( $_GET['revision'] ) ? sprintf( __( '%1$s restored to revision from %2$s.' , 'live-template-editor-embedded' ), $this->single, wp_post_revision_title( (int) $_GET['revision'], false ) ) : false,
-	    6 => sprintf( __( '%1$s published. %2$sView %3$s%4s.' , 'live-template-editor-embedded' ), $this->single, '<a href="' . esc_url( get_permalink( $post_ID ) ) . '">', $this->single, '</a>' ),
-	    7 => sprintf( __( '%1$s saved.' , 'live-template-editor-embedded' ), $this->single ),
-	    8 => sprintf( __( '%1$s submitted. %2$sPreview post%3$s%4$s.' , 'live-template-editor-embedded' ), $this->single, '<a target="_blank" href="' . esc_url( add_query_arg( 'preview', 'true', get_permalink( $post_ID ) ) ) . '">', $this->single, '</a>' ),
-	    9 => sprintf( __( '%1$s scheduled for: %2$s. %3$sPreview %4$s%5$s.' , 'live-template-editor-embedded' ), $this->single, '<strong>' . date_i18n( __( 'M j, Y @ G:i' , 'live-template-editor-embedded' ), strtotime( $post->post_date ) ) . '</strong>', '<a target="_blank" href="' . esc_url( get_permalink( $post_ID ) ) . '">', $this->single, '</a>' ),
-	    10 => sprintf( __( '%1$s draft updated. %2$sPreview %3$s%4$s.' , 'live-template-editor-embedded' ), $this->single, '<a target="_blank" href="' . esc_url( add_query_arg( 'preview', 'true', get_permalink( $post_ID ) ) ) . '">', $this->single, '</a>' ),
+	    1 => sprintf( __( '%1$s updated. %2$sView %3$s%4$s.' , LTPLE_EMBEDDED_SLUG ), $this->single, '<a href="' . esc_url( get_permalink( $post_ID ) ) . '">', $this->single, '</a>' ),
+	    2 => __( 'Custom field updated.' , LTPLE_EMBEDDED_SLUG ),
+	    3 => __( 'Custom field deleted.' , LTPLE_EMBEDDED_SLUG ),
+	    4 => sprintf( __( '%1$s updated.' , LTPLE_EMBEDDED_SLUG ), $this->single ),
+	    5 => isset( $_GET['revision'] ) ? sprintf( __( '%1$s restored to revision from %2$s.' , LTPLE_EMBEDDED_SLUG ), $this->single, wp_post_revision_title( (int) $_GET['revision'], false ) ) : false,
+	    6 => sprintf( __( '%1$s published. %2$sView %3$s%4s.' , LTPLE_EMBEDDED_SLUG ), $this->single, '<a href="' . esc_url( get_permalink( $post_ID ) ) . '">', $this->single, '</a>' ),
+	    7 => sprintf( __( '%1$s saved.' , LTPLE_EMBEDDED_SLUG ), $this->single ),
+	    8 => sprintf( __( '%1$s submitted. %2$sPreview post%3$s%4$s.' , LTPLE_EMBEDDED_SLUG ), $this->single, '<a target="_blank" href="' . esc_url( add_query_arg( 'preview', 'true', get_permalink( $post_ID ) ) ) . '">', $this->single, '</a>' ),
+	    9 => sprintf( __( '%1$s scheduled for: %2$s. %3$sPreview %4$s%5$s.' , LTPLE_EMBEDDED_SLUG ), $this->single, '<strong>' . date_i18n( __( 'M j, Y @ G:i' , LTPLE_EMBEDDED_SLUG ), strtotime( $post->post_date ) ) . '</strong>', '<a target="_blank" href="' . esc_url( get_permalink( $post_ID ) ) . '">', $this->single, '</a>' ),
+	    10 => sprintf( __( '%1$s draft updated. %2$sPreview %3$s%4$s.' , LTPLE_EMBEDDED_SLUG ), $this->single, '<a target="_blank" href="' . esc_url( add_query_arg( 'preview', 'true', get_permalink( $post_ID ) ) ) . '">', $this->single, '</a>' ),
 	  );
 
 	  return $messages;
@@ -162,11 +162,11 @@ class LTPLE_Embedded_Post_Type {
 	public function bulk_updated_messages ( $bulk_messages = array(), $bulk_counts = array() ) {
 
 		$bulk_messages[ $this->post_type ] = array(
-	        'updated'   => sprintf( _n( '%1$s %2$s updated.', '%1$s %3$s updated.', $bulk_counts['updated'], 'live-template-editor-embedded' ), $bulk_counts['updated'], $this->single, $this->plural ),
-	        'locked'    => sprintf( _n( '%1$s %2$s not updated, somebody is editing it.', '%1$s %3$s not updated, somebody is editing them.', $bulk_counts['locked'], 'live-template-editor-embedded' ), $bulk_counts['locked'], $this->single, $this->plural ),
-	        'deleted'   => sprintf( _n( '%1$s %2$s permanently deleted.', '%1$s %3$s permanently deleted.', $bulk_counts['deleted'], 'live-template-editor-embedded' ), $bulk_counts['deleted'], $this->single, $this->plural ),
-	        'trashed'   => sprintf( _n( '%1$s %2$s moved to the Trash.', '%1$s %3$s moved to the Trash.', $bulk_counts['trashed'], 'live-template-editor-embedded' ), $bulk_counts['trashed'], $this->single, $this->plural ),
-	        'untrashed' => sprintf( _n( '%1$s %2$s restored from the Trash.', '%1$s %3$s restored from the Trash.', $bulk_counts['untrashed'], 'live-template-editor-embedded' ), $bulk_counts['untrashed'], $this->single, $this->plural ),
+	        'updated'   => sprintf( _n( '%1$s %2$s updated.', '%1$s %3$s updated.', $bulk_counts['updated'], LTPLE_EMBEDDED_SLUG ), $bulk_counts['updated'], $this->single, $this->plural ),
+	        'locked'    => sprintf( _n( '%1$s %2$s not updated, somebody is editing it.', '%1$s %3$s not updated, somebody is editing them.', $bulk_counts['locked'], LTPLE_EMBEDDED_SLUG ), $bulk_counts['locked'], $this->single, $this->plural ),
+	        'deleted'   => sprintf( _n( '%1$s %2$s permanently deleted.', '%1$s %3$s permanently deleted.', $bulk_counts['deleted'], LTPLE_EMBEDDED_SLUG ), $bulk_counts['deleted'], $this->single, $this->plural ),
+	        'trashed'   => sprintf( _n( '%1$s %2$s moved to the Trash.', '%1$s %3$s moved to the Trash.', $bulk_counts['trashed'], LTPLE_EMBEDDED_SLUG ), $bulk_counts['trashed'], $this->single, $this->plural ),
+	        'untrashed' => sprintf( _n( '%1$s %2$s restored from the Trash.', '%1$s %3$s restored from the Trash.', $bulk_counts['untrashed'], LTPLE_EMBEDDED_SLUG ), $bulk_counts['untrashed'], $this->single, $this->plural ),
 	    );
 
 	    return $bulk_messages;

@@ -12,12 +12,6 @@
  * Text Domain: ltple-embedded
  * Domain Path: /lang/
  *
- * GitHub Plugin URI: rafasashi/live-template-editor-embedded
- * GitHub Branch:     master
- *
- * @package WordPress
- * @author Rafasashi
- * @since 1.0.0
  */
  
 	/**
@@ -40,21 +34,6 @@
 		}			
 	}	
 	
-	if(!function_exists('ltple_row_meta')){
-	
-		function ltple_row_meta( $links, $file ){
-			
-			if ( strpos( $file, basename( __FILE__ ) ) !== false ) {
-				
-				$new_links = array( '<a href="https://github.com/rafasashi" target="_blank">' . __( 'Documentation', 'cleanlogin' ) . '</a>' );
-				$links = array_merge( $links, $new_links );
-			}
-			return $links;
-		}
-	}
-	
-	add_filter('plugin_row_meta', 'ltple_row_meta', 10, 2);
-	
 	$mode = ( is_dev_env() ? '-dev' : '');
 	
 	if( $mode == '-dev' ){
@@ -63,6 +42,12 @@
 	}
 	
 	// Load plugin config
+	
+	if(!defined('LTPLE_EMBEDDED_SLUG')){
+		
+		define('LTPLE_EMBEDDED_SLUG' , pathinfo(__FILE__, PATHINFO_FILENAME));
+	}
+	
 	require_once( 'config.php' );	
 	
 	// Load plugin functions
@@ -76,7 +61,7 @@
 		
 	// Autoload plugin libraries
 	
-	$lib = glob( __DIR__ . '/includes'.$mode.'/lib/class-ltple-embedded-*.php');
+	$lib = glob( __DIR__ . '/includes'.$mode.'/lib/class-*.php');
 	
 	foreach($lib as $file){
 		
