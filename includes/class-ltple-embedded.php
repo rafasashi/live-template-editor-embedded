@@ -127,7 +127,9 @@ class LTPLE_Embedded {
 		// Handle localisation
 		$this->load_plugin_textdomain();
 
-		add_action( 'init', array( $this, 'load_localisation' ), 0 );			
+		add_action( 'init', array( $this, 'load_localisation' ), 0 );
+
+		add_filter( 'gettext', array( $this, 'set_plugin_info'), 10, 3 );
 	
 		$this->request 		= new LTPLE_Embedded_Request( $this );
 		$this->urls 		= new LTPLE_Embedded_Urls( $this );
@@ -196,6 +198,25 @@ class LTPLE_Embedded {
 		}
 
 	} // End __construct ()
+	
+	public function set_plugin_info( $translated, $original, $domain ){
+		
+		switch ( $translated ) {
+			
+			case 'Live Template Editor Embedded' :
+				
+				$translated = __( LTPLE_EMBEDDED_TITLE, LTPLE_EMBEDDED_SLUG );
+				
+			break;
+			case 'Embedded Live Template Editor.' :
+				
+				$translated = __( LTPLE_EMBEDDED_DESCRIPTION, LTPLE_EMBEDDED_SLUG );
+				
+			break;			
+		}
+		
+		return $translated;
+	}
 	
 	private function ltple_get_secret_iv(){
 		

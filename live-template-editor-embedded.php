@@ -43,12 +43,12 @@
 	
 	// Load plugin config
 	
+	require_once( 'config.php' );
+
 	if(!defined('LTPLE_EMBEDDED_SLUG')){
 		
 		define('LTPLE_EMBEDDED_SLUG' , pathinfo(__FILE__, PATHINFO_FILENAME));
-	}
-	
-	require_once( 'config.php' );	
+	}	
 	
 	// Load plugin functions
 	require_once( 'includes'.$mode.'/functions.php' );	

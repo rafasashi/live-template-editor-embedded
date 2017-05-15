@@ -5,7 +5,11 @@
 
 	define('LTPLE_EMBEDDED_PREFIX' , 'ltple_');
 	
-	define('LTPLE_EMBEDDED_TITLE' , 'Live Template Editor Embedded');
+	define('LTPLE_EMBEDDED_TITLE' , 'LTPLE Embedded');
+	
+	define('LTPLE_EMBEDDED_DESCRIPTION' , 'Embedded Live Template Editor description.');
+	
+	define('LTPLE_EMBEDDED_SLUG' , 'ltple-embedded');
 	
 	define('LTPLE_EMBEDDED_SHORT' , 'Live Editor'); 
 	
