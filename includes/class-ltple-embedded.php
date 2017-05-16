@@ -147,7 +147,7 @@ class LTPLE_Embedded {
 				$this->admin->add_meta_box (
 				
 					'default_layer_id',
-					__( LTPLE_EMBEDDED_TITLE, $this->settings->plugin->slug ), 
+					__( LTPLE_EMBEDDED_SHORT, $this->settings->plugin->slug ), 
 					array($post->post_type),
 					'advanced'
 				);				

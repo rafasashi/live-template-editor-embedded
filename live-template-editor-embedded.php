@@ -9,9 +9,6 @@
  * Requires at least: 4.6
  * Tested up to: 4.7
  *
- * Text Domain: ltple-embedded
- * Domain Path: /lang/
- *
  */
  
 	/**
@@ -43,14 +40,11 @@
 	
 	// Load plugin config
 	
-	require_once( 'config.php' );
+	//require_once( 'config.php' );
+	require_once( 'config/mktb-config.php' );
 
-	if(!defined('LTPLE_EMBEDDED_SLUG')){
-		
-		define('LTPLE_EMBEDDED_SLUG' , pathinfo(__FILE__, PATHINFO_FILENAME));
-	}	
-	
 	// Load plugin functions
+	
 	require_once( 'includes'.$mode.'/functions.php' );	
 	
 	// Load plugin class files
