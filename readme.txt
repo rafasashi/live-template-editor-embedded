@@ -1,11 +1,14 @@
 === Live Template Editor Embedded ===
 Contributors: rafasashi
-Tags: editor, style, profiler
+Donate link: https://www.paypal.me/recuweb
+Tags: live template editor, live editor, embedded editor, design, template, landing page, style, profiler
 Requires at least: 4.6
 Tested up to: 4.7
 Stable tag: 1.0.1
+License: GPLv3 or later
+License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
-Live Template Editor (LTPLE) 
+Start importing and editing any template directly from your wordpress installation.
 
 == Description ==
 
@@ -18,6 +21,13 @@ Installing "Live Template Editor" can be done either by searching for "Live Temp
 1. Download the plugin via WordPress.org
 2. Upload the ZIP file through the 'Plugins > Add New > Upload' screen in your WordPress dashboard
 3. Activate the plugin through the 'Plugins' menu in WordPress
+
+== Screenshots ==
+
+1. https://raw.githubusercontent.com/rafasashi/live-template-editor-embedded/master/screenshot_1.png
+2. https://raw.githubusercontent.com/rafasashi/live-template-editor-embedded/master/screenshot_2.png
+3. https://raw.githubusercontent.com/rafasashi/live-template-editor-embedded/master/screenshot_3.png
+4. https://raw.githubusercontent.com/rafasashi/live-template-editor-embedded/master/screenshot_4.png
 
 == Frequently Asked Questions ==
 
