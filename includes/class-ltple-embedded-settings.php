@@ -37,11 +37,6 @@ class LTPLE_Embedded_Settings {
 
 		$this->parent = $parent;
 		
-		$this->plugin 			= new stdClass();
-		$this->plugin->slug  	= LTPLE_EMBEDDED_SLUG;
-		$this->plugin->title 	= LTPLE_EMBEDDED_TITLE;
-		$this->plugin->short 	= LTPLE_EMBEDDED_SHORT;
-		
 		// get options
 		$this->options 				 = new stdClass();
 		$this->options->postTypes 	 = get_option( $this->parent->_base . 'post_types');
@@ -73,16 +68,10 @@ class LTPLE_Embedded_Settings {
 	 * @return void
 	 */
 	public function add_menu_items () {
-		
-		//add menu in wordpress settings
-		
-		//$page = add_options_page( __( $this->plugin->title, $this->plugin->slug ) , __( $this->plugin->short, $this->plugin->slug ) , 'manage_options' , $this->parent->_token . '_settings' ,  array( $this, 'settings_page' ) );
-		//add_action( 'admin_print_styles' . $page, array( $this, 'settings_assets' ) );
-		
+
 		//add menu in wordpress dashboard
 		
-		add_menu_page($this->plugin->short, $this->plugin->short, 'manage_options', $this->plugin->slug, array($this, 'settings_page'),'dashicons-layout');
-
+		add_menu_page(LTPLE_EMBEDDED_SHORT, LTPLE_EMBEDDED_SHORT, 'manage_options', 'live-editor', array($this, 'settings_page'),'dashicons-layout');
 	}
 	
 	/**
@@ -111,7 +100,7 @@ class LTPLE_Embedded_Settings {
 	 */
 	public function add_settings_link ( $links ) {
 		
-		$settings_link = '<a href="options-general.php?page=' . $this->parent->_token . '_settings">' . __( 'Settings', $this->plugin->slug ) . '</a>';
+		$settings_link = '<a href="options-general.php?page=live-editor">' . __( 'Settings', LTPLE_EMBEDDED_SLUG ) . '</a>';
   		array_push( $links, $settings_link );
   		return $links;
 	}
@@ -123,21 +112,9 @@ class LTPLE_Embedded_Settings {
 	private function settings_fields () {
 		
 		$settings['settings'] = array(
-			'title'					=> __( 'General settings', $this->plugin->slug ),
-			'description'			=> '',
-			'fields'				=> array(
-				array(
-					'id' 			=> 'post_types',
-					'label'			=> __( 'Post Types' , $this->plugin->slug ),
-					'description'	=> '',
-					'type'			=> 'checkbox_multi',
-					'options'		=> array(
-					
-						'post' 			=> 'Post',
-						'page' 			=> 'Page',
-					),
-				),
-			)
+			'title'					=> __( 'General settings', LTPLE_EMBEDDED_SLUG ),
+			'description'			=> LTPLE_EMBEDDED_DESCRIPTION,
+			'fields'				=> $this->get_fields()
 		);
 
 		$settings = apply_filters( $this->parent->_token . '_settings_fields', $settings );
@@ -145,6 +122,39 @@ class LTPLE_Embedded_Settings {
 		return $settings;
 	}
 
+	private function get_fields(){
+		
+		$fields = array();
+
+		$fields[] = array(
+			
+			'id' 			=> 'embedded_key',
+			'label'			=> __( 'Customer Key' , LTPLE_EMBEDDED_SLUG ),
+			'description'	=> '',
+			'type'			=> 'text',
+			'placeholder'	=> 'key_',
+			'description'	=> 'customer key from your ' . LTPLE_EMBEDDED_SHORT . ' account'
+		);
+		
+		if( !empty($this->parent->key) ){
+		
+			$fields[] = array(
+			
+				'id' 			=> 'post_types',
+				'label'			=> __( 'Post Types' , LTPLE_EMBEDDED_SLUG ),
+				'description'	=> '',
+				'type'			=> 'checkbox_multi',
+				'options'		=> array(
+				
+					'post' 			=> 'Post',
+					'page' 			=> 'Page',
+				),
+			);
+		}
+
+		return $fields;
+	}	
+	
 	/**
 	 * Register plugin settings
 	 * @return void
@@ -207,12 +217,12 @@ class LTPLE_Embedded_Settings {
 	 * @return void
 	 */
 	public function settings_page () {
-
+	
 		// Build page HTML
 		
 		$html = '<div class="wrap" id="' . $this->parent->_token . '_settings">' . "\n";
 			
-			$html .= '<h1>' . __( $this->plugin->title , $this->plugin->slug ) . '</h1>' . "\n";
+			$html .= '<h1>' . __( LTPLE_EMBEDDED_SHORT , LTPLE_EMBEDDED_SLUG ) . '</h1>' . "\n";
 
 			$tab = '';
 			if ( isset( $_GET['tab'] ) && $_GET['tab'] ) {
@@ -274,7 +284,7 @@ class LTPLE_Embedded_Settings {
 
 					$html .= '<p class="submit">' . "\n";
 						$html .= '<input type="hidden" name="tab" value="' . esc_attr( $tab ) . '" />' . "\n";
-						$html .= '<input name="Submit" type="submit" class="button-primary" value="' . esc_attr( __( 'Save Settings' , $this->plugin->slug ) ) . '" />' . "\n";
+						$html .= '<input name="Submit" type="submit" class="button-primary" value="' . esc_attr( __( 'Save Settings' , LTPLE_EMBEDDED_SLUG ) ) . '" />' . "\n";
 					$html .= '</p>' . "\n";
 					
 				$html .= '</form>' . "\n";

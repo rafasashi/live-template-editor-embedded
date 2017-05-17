@@ -85,6 +85,8 @@ class LTPLE_Embedded {
 	public $layer;
 	public $message;
 	public $dialog;
+	public $key;
+	public $data;
 	
 	/**
 	 * Constructor function.
@@ -96,9 +98,10 @@ class LTPLE_Embedded {
 	public function __construct ( $file = '', $version = '1.0.0' ) {
 		
 		$this->_version = $version;
-		$this->_token 	= LTPLE_EMBEDDED_TOKEN;
-		$this->_base 	= LTPLE_EMBEDDED_PREFIX;
-		$this->dialog 	= new stdClass();	
+		$this->_token 	= 'ltple';
+		$this->_base 	= 'ltple_';				
+		$this->dialog 	= new stdClass();
+		$this->urls 	= new stdClass();
 		
 		if( isset($_GET['_']) && is_numeric($_GET['_']) ){
 			
@@ -121,103 +124,160 @@ class LTPLE_Embedded {
 		
 		//$this->script_suffix = defined( 'SCRIPT_DEBUG' ) && SCRIPT_DEBUG ? '' : '.min';
 		$this->script_suffix = '';
-
+		
 		register_activation_hook( $this->file, array( $this, 'install' ) );
 		
 		// Handle localisation
 		$this->load_plugin_textdomain();
 
 		add_action( 'init', array( $this, 'load_localisation' ), 0 );
-
-		add_filter( 'gettext', array( $this, 'set_plugin_info'), 10, 3 );
 	
-		$this->request 		= new LTPLE_Embedded_Request( $this );
-		$this->urls 		= new LTPLE_Embedded_Urls( $this );
+		$this->request 	= new LTPLE_Embedded_Request( $this );
 		
 		// Load API for generic admin functions
 		
 		$this->admin 	= new LTPLE_Embedded_Admin_API( $this );
+		
+		// get embedded key
+		
+		$keys = get_option( $this->_base . 'embedded_key', array());
+		
+		$keys = explode('_', $keys);
+		
+		// set embedded user key
+		
+		if(!empty($keys[1])){
+		
+			$this->key 	= $keys[1];
+		}		
 
-		add_action( 'add_meta_boxes', function(){
+		// get urls
+		
+		$this->urls->current 	= 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
+		$this->urls->home 		= home_url();
+		$this->urls->data 		= ( !empty($keys[2]) ? $this->ltple_decrypt_str($keys[2],$this->_base) : '' );			
 
-			global $post;
+		if( filter_var($this->urls->data, FILTER_VALIDATE_URL) != FALSE){
 			
-			if( in_array( $post->post_type, $this->settings->options->postTypes ) ){
+			$this->data = $this->get_embedded_data();
+			
+			if( filter_var($this->data->editor_url, FILTER_VALIDATE_URL) != FALSE ){
+				
+				$this->urls->editor = $this->data->editor_url;
 
-				$this->admin->add_meta_box (
+				if( !defined('LTPLE_EMBEDDED_PREFIX') ){
+
+					define('LTPLE_EMBEDDED_PREFIX' , $this->data->prefix );
+				}				
 				
-					'default_layer_id',
-					__( LTPLE_EMBEDDED_SHORT, $this->settings->plugin->slug ), 
-					array($post->post_type),
-					'advanced'
-				);				
-				
-				if( in_array( $post->post_type, $this->settings->options->postTypes ) ){
-				
-					// get default layer id
-					
-					$post->layer_id = intval(get_post_meta( $post->ID, 'defaultLayerId', true));
-					
-					if( $post->layer_id == 0 ){
-						
-						return;
-					}
-					else{
-						
-						remove_post_type_support($post->post_type, 'editor');
-					}
+				if( !defined('LTPLE_EMBEDDED_EDITOR_URL') ){
+
+					define('LTPLE_EMBEDDED_EDITOR_URL' , $this->urls->editor );
 				}
+
+				if( !defined('LTPLE_EMBEDDED_SHORT') ){
+
+					define('LTPLE_EMBEDDED_SHORT' , $this->data->short_title );
+				}
+
+				if( !defined('LTPLE_EMBEDDED_TITLE') ){
+
+					define('LTPLE_EMBEDDED_TITLE' , $this->data->long_title );
+				}
+
+				if( !defined('LTPLE_EMBEDDED_DESCRIPTION') ){
+
+					define('LTPLE_EMBEDDED_DESCRIPTION' , $this->data->description );
+				}				
 				
-				/*
-				$this->admin->add_meta_box (
-					
-					'layer-css',
-					__( 'Layer CSS', $this->settings->plugin->slug ), 
-					array($post->post_type),
-					'advanced'
-				);
+				add_action( 'add_meta_boxes', function(){
+
+					global $post;	
 				
-				$this->admin->add_meta_box (
+					if( in_array( $post->post_type, $this->settings->options->postTypes ) ){
+
+						$this->admin->add_meta_box (
+						
+							'default_layer_id',
+							__( LTPLE_EMBEDDED_SHORT, LTPLE_EMBEDDED_SLUG ), 
+							array($post->post_type),
+							'advanced'
+						);				
+						
+						if( in_array( $post->post_type, $this->settings->options->postTypes ) ){
+						
+							// get default layer id
+							
+							$post->layer_id = intval(get_post_meta( $post->ID, 'defaultLayerId', true));
+							
+							if( $post->layer_id == 0 ){
+								
+								return;
+							}
+							else{
+								
+								remove_post_type_support($post->post_type, 'editor');
+							}
+						}
+					}
+				});		
+				
+				if( is_admin() ) {		
 					
-					'layer-js',
-					__( 'Layer Javascript', $this->settings->plugin->slug ), 
-					array($post->post_type),
-					'advanced'
-				);
-				*/
+					add_action( 'init', array( $this, 'init_backend' ));			
+				}
+				else{
+					
+					add_action( 'init', array( $this, 'init_frontend' ));
+				}
 			}
-		});		
-		
-		if( is_admin() ) {		
-			
-			add_action( 'init', array( $this, 'init_backend' ));			
 		}
-		else{
+		
+		if( !defined('LTPLE_EMBEDDED_SHORT') ){
+
+			define('LTPLE_EMBEDDED_SHORT' , 'Live Editor' );
+		}
+		
+		if( !defined('LTPLE_EMBEDDED_DESCRIPTION') ){
+
+			define('LTPLE_EMBEDDED_DESCRIPTION' , 'Use your Customer Key to activate the plugin' );
+		}	
+		
+	} // End __construct ()
+
+	public function get_remote_data( $url, $transient='', $flush = false ){
+
+		$result = get_transient( $transient );
+
+		if( empty( $result ) || $flush === true ) {
 			
-			add_action( 'init', array( $this, 'init_frontend' ));
+			$response = wp_remote_get(  $url );
+			
+			if( is_wp_error( $response ) ) {
+				return array();
+			}
+
+			$result = json_decode( wp_remote_retrieve_body( $response ) );
+
+			if( empty( $result ) ) {
+				
+				return array();
+			}
+			
+			if( !empty($transient) ){
+				
+				set_transient( $transient, $result, HOUR_IN_SECONDS );
+			}
 		}
 
-	} // End __construct ()
-	
-	public function set_plugin_info( $translated, $original, $domain ){
-		
-		switch ( $translated ) {
-			
-			case 'Live Template Editor Embedded' :
-				
-				$translated = __( LTPLE_EMBEDDED_TITLE, LTPLE_EMBEDDED_SLUG );
-				
-			break;
-			case 'Embedded Live Template Editor.' :
-				
-				$translated = __( LTPLE_EMBEDDED_DESCRIPTION, LTPLE_EMBEDDED_SLUG );
-				
-			break;			
-		}
-		
-		return $translated;
+		return $result;	
 	}
 	
+	public function get_embedded_data( $version = '1.0' ){
+
+		return $this->get_remote_data( $this->urls->data,'embedded_data'.$version );	
+	}
+
 	private function ltple_get_secret_iv(){
 		
 		//$secret_iv = md5( $this->user_agent . $this->user_ip );
@@ -227,13 +287,16 @@ class LTPLE_Embedded {
 		return $secret_iv;
 	}	
 	
-	private function ltple_encrypt_str($string){
+	private function ltple_encrypt_str( $string, $secret_key = '' ){
 		
 		$output = false;
 
 		$encrypt_method = "AES-256-CBC";
 		
-		$secret_key = md5( $this->embedded->key );
+		if( empty($secret_key) ){
+			
+			$secret_key = md5( $this->embedded->key );
+		}
 		
 		$secret_iv = $this->ltple_get_secret_iv();
 		
@@ -249,13 +312,17 @@ class LTPLE_Embedded {
 		return $output;
 	}
 	
-	private function ltple_decrypt_str($string){
+	private function ltple_decrypt_str($string, $secret_key=''){
 		
 		$output = false;
 
 		$encrypt_method = "AES-256-CBC";
 		
-		$secret_key = md5( $this->embedded->key );
+		if( empty($secret_key) ){
+			
+			$secret_key = md5( $this->embedded->key );
+		
+		}
 		
 		$secret_iv = $this->ltple_get_secret_iv();
 
@@ -364,6 +431,8 @@ class LTPLE_Embedded {
 					$defaultLayerId = intval($_POST['defaultLayerId']);
 					
 					update_post_meta($layer_id, 'defaultLayerId', $defaultLayerId);
+					
+					update_post_meta($layer_id, 'userLayerId', '');
 				}
 				elseif( !empty($_GET['uli']) && is_numeric($_GET['uli']) && !empty($_GET['ulk']) && !empty($_GET['ult']) && $_GET['ulk'] == md5('userLayerId'.$_GET['uli'].$_GET['ult']) ){
 					
@@ -445,6 +514,7 @@ class LTPLE_Embedded {
 					'uri' 		=> ( $this->userLayerId > 0 ? $this->userLayerId : $this->defaultLayerId ),
 					'le' 		=> urlencode( $this->urls->home . '/?p=' . $post->ID ),
 					'title' 	=> urlencode( $post->post_title ),
+					'key' 		=> $this->key,
 					'output' 	=> 'embedded',
 					
 				), LTPLE_EMBEDDED_EDITOR_URL );					

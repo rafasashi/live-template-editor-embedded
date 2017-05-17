@@ -5,15 +5,15 @@ Requires at least: 4.6
 Tested up to: 4.7
 Stable tag: 1.0.1
 
-LTPLE template editor  
+Live Template Editor (LTPLE) 
 
 == Description ==
 
-Live Template Editor Embedded allows you to edit template profils.
+Setup your Live Editor customer key to start importing and editing any template directly from your wordpress installation.
 
 == Installation ==
 
-Installing "Live Template Editor Embedded" can be done either by searching for "Live Template Editor Embedded" via the "Plugins > Add New" screen in your WordPress dashboard, or by using the following steps:
+Installing "Live Template Editor" can be done either by searching for "Live Template Editor" via the "Plugins > Add New" screen in your WordPress dashboard, or by using the following steps:
 
 1. Download the plugin via WordPress.org
 2. Upload the ZIP file through the 'Plugins > Add New > Upload' screen in your WordPress dashboard
@@ -23,16 +23,16 @@ Installing "Live Template Editor Embedded" can be done either by searching for "
 
 = What is the plugin template for? =
 
-This plugin template is designed to edit LTPLE profils
+This plugin template is designed to import and edit any LTPLE template directly from your wordpress installation.
 
 == Changelog ==
 
 = 1.0 =
-* 2016-09-15
+* 2017-05-17
 * Initial release
 
 == Upgrade Notice ==
 
 = 1.0 =
-* 2016-09-15
+* 2017-05-17
 * Initial release

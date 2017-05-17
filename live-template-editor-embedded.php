@@ -1,9 +1,9 @@
 <?php
 /*
- * Plugin Name: Live Template Editor Embedded
+ * Plugin Name: Live Template Editor
  * Version: 1.1.0
- * Plugin URI: https://github.com/rafasashi
- * Description: Embedded Live Template Editor.
+ * Plugin URI: https://ltple.recuweb.com
+ * Description: Setup your Marketer Bay customer key to start importing and editing any template directly from your wordpress installation.
  * Author: Rafasashi
  * Author URI: https://github.com/rafasashi
  * Requires at least: 4.6
@@ -38,10 +38,10 @@
 		ini_set('display_errors', 1);
 	}
 	
-	// Load plugin config
-	
-	//require_once( 'config.php' );
-	require_once( 'config/mktb-config.php' );
+	if( !defined('LTPLE_EMBEDDED_SLUG') ){
+
+		define('LTPLE_EMBEDDED_SLUG',pathinfo(__FILE__, PATHINFO_FILENAME));
+	}
 
 	// Load plugin functions
 	
