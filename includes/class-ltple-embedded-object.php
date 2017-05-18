@@ -29,7 +29,7 @@ class LTPLE_Embedded_Object {
 		
 			foreach($default as $slug => $data){
 				
-				if( !in_array_field( $slug, 'slug', $list ) ){
+				if( !$this->parent->in_array_field( $slug, 'slug', $list ) ){
 					
 					$name= '';
 					

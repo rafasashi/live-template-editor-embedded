@@ -276,8 +276,8 @@ class LTPLE_Embedded {
 	public function get_embedded_data( $version = '1.0' ){
 
 		return $this->get_remote_data( $this->urls->data,'embedded_data'.$version );	
-	}
-
+	}	
+	
 	private function ltple_get_secret_iv(){
 		
 		//$secret_iv = md5( $this->user_agent . $this->user_ip );
@@ -517,7 +517,7 @@ class LTPLE_Embedded {
 					'key' 		=> $this->key,
 					'output' 	=> 'embedded',
 					
-				), LTPLE_EMBEDDED_EDITOR_URL );					
+				), LTPLE_EMBEDDED_EDITOR_URL );
 				
 				$template_path = $this->views . $this->_dev . '/editor.php';
 			}
@@ -679,6 +679,25 @@ class LTPLE_Embedded {
 		return $u;		
 	}
 	
+	function in_array_field($needle, $needle_field, $haystack, $strict = false) { 
+
+		if(!empty($haystack)){
+	
+			if ($strict) { 
+				foreach ($haystack as $item) 
+					if (isset($item->$needle_field) && $item->$needle_field === $needle) 
+						return true; 
+			} 
+			else { 
+				foreach ($haystack as $item) 
+					if (isset($item->$needle_field) && $item->$needle_field == $needle) 
+						return true; 
+			}
+		}
+		
+		return false; 
+	}
+	
 	/**
 	 * Wrapper function to register a new post type
 	 * @param  string $post_type   Post type name
@@ -790,7 +809,8 @@ class LTPLE_Embedded {
 	 * @return  void
 	 */
 	public function load_plugin_textdomain() {
-	    $domain = LTPLE_EMBEDDED_SLUG;
+	    
+		$domain = LTPLE_EMBEDDED_SLUG;
 
 	    $locale = apply_filters( 'plugin_locale', get_locale(), $domain );
 

@@ -18,20 +18,9 @@
 	
 	if ( ! defined( 'ABSPATH' ) ) exit;
 	
-	if(!function_exists('is_dev_env')){
-		
-		function is_dev_env( $dev_ip = '109.28.69.143' ){ 
-			
-			if( $_SERVER['REMOTE_ADDR'] == $dev_ip || ( isset($_SERVER['HTTP_X_FORWARDED_FOR']) && $_SERVER['HTTP_X_FORWARDED_FOR'] == $dev_ip ) ){
-				
-				return true;
-			}
-
-			return false;		
-		}			
-	}	
+	$dev_ip = '109.28.69.143';
 	
-	$mode = ( is_dev_env() ? '-dev' : '');
+	$mode = ( ($_SERVER['REMOTE_ADDR'] == $dev_ip || ( isset($_SERVER['HTTP_X_FORWARDED_FOR']) && $_SERVER['HTTP_X_FORWARDED_FOR'] == $dev_ip )) ? '-dev' : '');
 	
 	if( $mode == '-dev' ){
 		
@@ -68,7 +57,7 @@
 	 * @since  1.0.0
 	 * @return object LTPLE_Embedded
 	 */
-	function LTPLE_Embedded ( $version = '1.0.0' ) {
+	function LTPLE_Embedded ( $version = '1.0.0', $mode = '' ) {
 		
 		register_activation_hook( __FILE__, array( 'LTPLE_Embedded', 'install' ) );
 		
@@ -91,9 +80,9 @@
 	
 	if( $mode == '-dev' ){
 		
-		LTPLE_Embedded('1.1.1');
+		LTPLE_Embedded( '1.1.1', $mode );
 	}
 	else{
 		
-		LTPLE_Embedded('1.1.0');
+		LTPLE_Embedded( '1.1.0', $mode );
 	}
