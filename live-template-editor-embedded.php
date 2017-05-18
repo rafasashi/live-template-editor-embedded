@@ -65,7 +65,7 @@
 		
 		if ( is_null( $instance->_dev ) ) {
 			
-			$instance->_dev = ( is_dev_env() ? '-dev' : '');
+			$instance->_dev = $mode;
 		}				
  
 		if ( is_null( $instance->settings ) ) {
