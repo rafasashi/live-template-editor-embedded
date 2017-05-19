@@ -11,7 +11,8 @@ class LTPLE_Uploader {
     private $accessToken; // GitHub private repo token
 
     function __construct( $pluginFile, $gitHubUsername, $gitHubProjectName, $accessToken = '' ) {
-        add_filter( "pre_set_site_transient_update_plugins", array( $this, "setTransitent" ) );
+        
+		add_filter( "pre_set_site_transient_update_plugins", array( $this, "setTransitent" ) );
         add_filter( "plugins_api", array( $this, "setPluginInfo" ), 10, 3 );
         add_filter( "upgrader_post_install", array( $this, "postInstall" ), 10, 3 );
 
@@ -23,8 +24,8 @@ class LTPLE_Uploader {
 
     // Get information regarding our plugin from WordPress
     private function initPluginData() {
-        $this->slug = plugin_basename( $this->pluginFile );
-        $this->pluginData = get_plugin_data( $this->pluginFile );
+        $this->slug 		= plugin_basename( $this->pluginFile );
+        $this->pluginData 	= get_plugin_data( $this->pluginFile );
     }
 
     // Get information regarding our plugin from GitHub
@@ -44,12 +45,15 @@ class LTPLE_Uploader {
 
         // Get the results
         $this->githubAPIResult = wp_remote_retrieve_body( wp_remote_get( $url ) );
+		
         if ( !empty( $this->githubAPIResult ) ) {
             $this->githubAPIResult = @json_decode( $this->githubAPIResult );
         }
 
         // Use only the latest release
+		
         if ( is_array( $this->githubAPIResult ) ) {
+			
             $this->githubAPIResult = $this->githubAPIResult[0];
         }
     }
@@ -66,8 +70,8 @@ class LTPLE_Uploader {
         $this->getRepoReleaseInfo();
 
         // Check the versions if we need to do an update
-        $doUpdate = version_compare( $this->githubAPIResult->tag_name, $transient->checked[$this->slug] );
-
+		$doUpdate = version_compare( $this->githubAPIResult->tag_name, $transient->checked[$this->slug] );
+		
         // Update the transient to include our updated plugin data
         if ( $doUpdate == 1 ) {
             $package = $this->githubAPIResult->zipball_url;
