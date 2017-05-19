@@ -1,6 +1,6 @@
 <?php
 
-class LTPLE_Uploader {
+class LTPLE_Updater {
 
     private $slug; // plugin slug
     private $pluginData; // plugin data

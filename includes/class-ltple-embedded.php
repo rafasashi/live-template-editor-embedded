@@ -81,7 +81,7 @@ class LTPLE_Embedded {
 	 */
 	public $script_suffix;
 	
-	public $uploader;
+	public $updater;
 	public $user;
 	public $layer;
 	public $message;
@@ -398,7 +398,7 @@ class LTPLE_Embedded {
 
 		// update plugin
 	
-		$this->uploader = new LTPLE_Uploader( $this->file, 'rafasashi', LTPLE_EMBEDDED_SLUG );
+		$this->updater = new LTPLE_Updater( $this->file, 'rafasashi', LTPLE_EMBEDDED_SLUG );
 
 		// Load admin JS & CSS
 		
