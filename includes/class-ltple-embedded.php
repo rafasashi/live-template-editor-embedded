@@ -142,93 +142,96 @@ class LTPLE_Embedded {
 		
 		$keys = get_option( $this->_base . 'embedded_key', array());
 		
-		$keys = explode('_', $keys);
+		if( !empty($keys) && is_string($keys) ){
 		
-		// set embedded user key
-		
-		if(!empty($keys[1])){
-		
-			$this->key 	= $keys[1];
-		}		
-
-		// get urls
-		
-		$this->urls->current 	= 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
-		$this->urls->home 		= home_url();
-		$this->urls->data 		= ( !empty($keys[2]) ? $this->ltple_decrypt_str($keys[2],$this->_base) : '' );			
-
-		if( filter_var($this->urls->data, FILTER_VALIDATE_URL) != FALSE){
+			$keys = explode('_', $keys);
 			
-			$this->data = $this->get_embedded_data();
+			// set embedded user key
 			
-			if( filter_var($this->data->editor_url, FILTER_VALIDATE_URL) != FALSE ){
+			if(!empty($keys[1])){
+			
+				$this->key 	= $keys[1];
+			}		
+
+			// get urls
+			
+			$this->urls->current 	= 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
+			$this->urls->home 		= home_url();
+			$this->urls->data 		= ( !empty($keys[2]) ? $this->ltple_decrypt_str($keys[2],$this->_base) : '' );			
+
+			if( filter_var($this->urls->data, FILTER_VALIDATE_URL) != FALSE){
 				
-				$this->urls->editor = $this->data->editor_url;
-
-				if( !defined('LTPLE_EMBEDDED_PREFIX') ){
-
-					define('LTPLE_EMBEDDED_PREFIX' , $this->data->prefix );
-				}				
+				$this->data = $this->get_embedded_data();
 				
-				if( !defined('LTPLE_EMBEDDED_EDITOR_URL') ){
+				if( filter_var($this->data->editor_url, FILTER_VALIDATE_URL) != FALSE ){
+					
+					$this->urls->editor = $this->data->editor_url;
 
-					define('LTPLE_EMBEDDED_EDITOR_URL' , $this->urls->editor );
-				}
+					if( !defined('LTPLE_EMBEDDED_PREFIX') ){
 
-				if( !defined('LTPLE_EMBEDDED_SHORT') ){
+						define('LTPLE_EMBEDDED_PREFIX' , $this->data->prefix );
+					}				
+					
+					if( !defined('LTPLE_EMBEDDED_EDITOR_URL') ){
 
-					define('LTPLE_EMBEDDED_SHORT' , $this->data->short_title );
-				}
+						define('LTPLE_EMBEDDED_EDITOR_URL' , $this->urls->editor );
+					}
 
-				if( !defined('LTPLE_EMBEDDED_TITLE') ){
+					if( !defined('LTPLE_EMBEDDED_SHORT') ){
 
-					define('LTPLE_EMBEDDED_TITLE' , $this->data->long_title );
-				}
+						define('LTPLE_EMBEDDED_SHORT' , $this->data->short_title );
+					}
 
-				if( !defined('LTPLE_EMBEDDED_DESCRIPTION') ){
+					if( !defined('LTPLE_EMBEDDED_TITLE') ){
 
-					define('LTPLE_EMBEDDED_DESCRIPTION' , $this->data->description );
-				}				
-				
-				add_action( 'add_meta_boxes', function(){
+						define('LTPLE_EMBEDDED_TITLE' , $this->data->long_title );
+					}
 
-					global $post;	
-				
-					if( in_array( $post->post_type, $this->settings->options->postTypes ) ){
+					if( !defined('LTPLE_EMBEDDED_DESCRIPTION') ){
 
-						$this->admin->add_meta_box (
-						
-							'default_layer_id',
-							__( LTPLE_EMBEDDED_SHORT, LTPLE_EMBEDDED_SLUG ), 
-							array($post->post_type),
-							'advanced'
-						);				
-						
+						define('LTPLE_EMBEDDED_DESCRIPTION' , $this->data->description );
+					}				
+					
+					add_action( 'add_meta_boxes', function(){
+
+						global $post;	
+					
 						if( in_array( $post->post_type, $this->settings->options->postTypes ) ){
-						
-							// get default layer id
+
+							$this->admin->add_meta_box (
 							
-							$post->layer_id = intval(get_post_meta( $post->ID, 'defaultLayerId', true));
+								'default_layer_id',
+								__( LTPLE_EMBEDDED_SHORT, LTPLE_EMBEDDED_SLUG ), 
+								array($post->post_type),
+								'advanced'
+							);				
 							
-							if( $post->layer_id == 0 ){
+							if( in_array( $post->post_type, $this->settings->options->postTypes ) ){
+							
+								// get default layer id
 								
-								return;
-							}
-							else{
+								$post->layer_id = intval(get_post_meta( $post->ID, 'defaultLayerId', true));
 								
-								remove_post_type_support($post->post_type, 'editor');
+								if( $post->layer_id == 0 ){
+									
+									return;
+								}
+								else{
+									
+									remove_post_type_support($post->post_type, 'editor');
+								}
 							}
 						}
+					});		
+					
+					if( is_admin() ) {		
+						
+						add_action( 'init', array( $this, 'init_backend' ));			
 					}
-				});		
-				
-				if( is_admin() ) {		
-					
-					add_action( 'init', array( $this, 'init_backend' ));			
-				}
-				else{
-					
-					add_action( 'init', array( $this, 'init_frontend' ));
+					else{
+						
+						add_action( 'init', array( $this, 'init_frontend' ));
+					}
 				}
 			}
 		}
@@ -392,6 +395,10 @@ class LTPLE_Embedded {
 	
 	public function init_backend(){	
 
+		// update plugin
+	
+		$this->uploader = new LTPLE_Uploader( __FILE__, 'rafasashi', LTPLE_EMBEDDED_SLUG );
+
 		// Load admin JS & CSS
 		
 		add_action( 'admin_enqueue_scripts', array( $this, 'admin_enqueue_scripts' ), 10, 1 );
@@ -450,11 +457,6 @@ class LTPLE_Embedded {
 					
 					update_post_meta($layer_id, 'userLayerId', $userLayerId);
 				}
-				else{
-					
-					//$defaultLayerId = intval(get_post_meta( $layer_id, 'defaultLayerId', true));
-					//$userLayerId 	= intval(get_post_meta( $layer_id, 'userLayerId', true));					
-				}
 
 				if( $defaultLayerId > 0 || $userLayerId > 0 ){
 				
@@ -469,6 +471,21 @@ class LTPLE_Embedded {
 					wp_redirect($layer_url);
 					echo 'Redirecting editor...';
 					exit;
+				}
+				else{
+					
+					//$defaultLayerId = intval(get_post_meta( $layer_id, 'defaultLayerId', true));
+					
+					$userLayerId = intval(get_post_meta( $layer_id, 'userLayerId', true));					
+				
+					if( $userLayerId ){
+							
+						// hide core text editor
+						
+						$post = get_post($layer_id);
+						
+						remove_post_type_support( $post->post_type, 'editor');
+					}
 				}				
 			}
 		}
@@ -527,9 +544,9 @@ class LTPLE_Embedded {
 			// get user layer id
 					
 			$this->userLayerId = intval(get_post_meta( $post->ID, 'userLayerId', true ));
-							
+			
 			if( $this->userLayerId > 0 ){
-
+				
 				// get layer content 
 				
 				$resourceUrl = add_query_arg( array(
@@ -563,8 +580,9 @@ class LTPLE_Embedded {
 					
 					// output layer content
 
-					echo $result;
-					exit;
+					$this->layer = $result;
+
+					$template_path = $this->views . $this->_dev . '/layer.php';
 				}
 			}
 		}

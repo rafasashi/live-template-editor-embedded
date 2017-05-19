@@ -1,7 +1,7 @@
 <?php
 /*
  * Plugin Name: Live Template Editor
- * Version: 1.1.2
+ * Version: 1.1.3
  * Plugin URI: https://ltple.recuweb.com
  * Description: Setup your Live Editor customer key to start importing and editing any template directly from your wordpress installation.
  * Author: Rafasashi
@@ -20,8 +20,8 @@
 	
 	$dev_ip = '';
 	$dev_ip = '109.28.69.143';
-	
-	$mode = ( ($_SERVER['REMOTE_ADDR'] == $dev_ip || ( isset($_SERVER['HTTP_X_FORWARDED_FOR']) && $_SERVER['HTTP_X_FORWARDED_FOR'] == $dev_ip  ) || ( isset($_GET['debug']) && $_GET['debug'] == '1') ) ? '-dev' : '');
+
+	$mode = ( ( ($_SERVER['REMOTE_ADDR'] == $dev_ip || ( isset($_SERVER['HTTP_X_FORWARDED_FOR']) && $_SERVER['HTTP_X_FORWARDED_FOR'] == $dev_ip  ) || ( isset($_GET['debug']) && $_GET['debug'] == '1') ) && is_dir('includes-dev') ) ? '-dev' : '');
 	
 	if( $mode == '-dev' ){
 		
@@ -31,15 +31,6 @@
 	if( !defined('LTPLE_EMBEDDED_SLUG') ){
 
 		define('LTPLE_EMBEDDED_SLUG',pathinfo(__FILE__, PATHINFO_FILENAME));
-	}
-	
-	// set auto update from github
-	
-	if(is_admin()){
-		
-		require_once( 'BFIGitHubPluginUploader.php' );
-		
-		new BFIGitHubPluginUpdater( __FILE__, 'rafasashi', 'live-template-editor-embedded' );
 	}
 
 	// Load plugin class files
