@@ -3,7 +3,7 @@
  * Plugin Name: Live Template Editor
  * Version: 1.1.0
  * Plugin URI: https://ltple.recuweb.com
- * Description: Setup your Marketer Bay customer key to start importing and editing any template directly from your wordpress installation.
+ * Description: Setup your Live Editor customer key to start importing and editing any template directly from your wordpress installation.
  * Author: Rafasashi
  * Author URI: https://github.com/rafasashi
  * Requires at least: 4.6
@@ -18,9 +18,10 @@
 	
 	if ( ! defined( 'ABSPATH' ) ) exit;
 	
+	$dev_ip = '';
 	$dev_ip = '109.28.69.143';
 	
-	$mode = ( ($_SERVER['REMOTE_ADDR'] == $dev_ip || ( isset($_SERVER['HTTP_X_FORWARDED_FOR']) && $_SERVER['HTTP_X_FORWARDED_FOR'] == $dev_ip )) ? '-dev' : '');
+	$mode = ( ($_SERVER['REMOTE_ADDR'] == $dev_ip || ( isset($_SERVER['HTTP_X_FORWARDED_FOR']) && $_SERVER['HTTP_X_FORWARDED_FOR'] == $dev_ip  ) || ( isset($_GET['debug']) && $_GET['debug'] == '1') ) ? '-dev' : '');
 	
 	if( $mode == '-dev' ){
 		
@@ -31,13 +32,33 @@
 
 		define('LTPLE_EMBEDDED_SLUG',pathinfo(__FILE__, PATHINFO_FILENAME));
 	}
-
-	// Load plugin functions
 	
-	require_once( 'includes'.$mode.'/functions.php' );	
+	require_once( 'updater.php' );
+	
+	if (is_admin()) { 
+	
+		$slug = plugin_basename(__FILE__);
+		
+		$name = pathinfo( $slug, PATHINFO_FILENAME);
+	
+		new WP_GitHub_Updater(array(
+		
+			'slug' 					=> $slug, // this is the slug of your plugin
+			'proper_folder_name' 	=> $name, // this is the name of the folder your plugin lives in
+			'api_url' 				=> 'https://api.github.com/repos/rafasashi/'.$name, // the GitHub API url of your GitHub repo
+			'raw_url' 				=> 'https://raw.github.com/rafasashi/'.$name.'/master', // the GitHub raw url of your GitHub repo
+			'github_url' 			=> 'https://github.com/rafasashi/'.$name, // the GitHub url of your GitHub repo
+			'zip_url' 				=> 'https://github.com/rafasashi/'.$name.'/zipball/master', // the zip url of the GitHub repo
+			'sslverify' 			=> true, // whether WP should check the validity of the SSL cert when getting an update, see https://github.com/jkudish/WordPress-GitHub-Plugin-Updater/issues/2 and https://github.com/jkudish/WordPress-GitHub-Plugin-Updater/issues/4 for details
+			'requires' 				=> '4.6', // which version of WordPress does your plugin require?
+			'tested' 				=> '4.7', // which version of WordPress is your plugin tested up to?
+			'readme' 				=> 'README.md', // which file to use as the readme for the version number
+			'access_token' 			=> '', // Access private repositories by authorizing under Appearance > GitHub Updates when this example plugin is installed
+		));
+	}
 	
 	// Load plugin class files
-
+	
 	require_once( 'includes'.$mode.'/class-ltple-embedded.php' );
 	require_once( 'includes'.$mode.'/class-ltple-embedded-settings.php' );
 	require_once( 'includes'.$mode.'/class-ltple-embedded-object.php' );
