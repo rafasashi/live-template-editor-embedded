@@ -21,8 +21,8 @@
 	$dev_ip = '';
 	$dev_ip = '109.28.69.143';
 
-	$mode = ( ( ($_SERVER['REMOTE_ADDR'] == $dev_ip || ( isset($_SERVER['HTTP_X_FORWARDED_FOR']) && $_SERVER['HTTP_X_FORWARDED_FOR'] == $dev_ip  ) || ( isset($_GET['debug']) && $_GET['debug'] == '1') ) && is_dir('includes-dev') ) ? '-dev' : '');
-	
+	$mode = ( ( ($_SERVER['REMOTE_ADDR'] == $dev_ip || ( isset($_SERVER['HTTP_X_FORWARDED_FOR']) && $_SERVER['HTTP_X_FORWARDED_FOR'] == $dev_ip  ) || ( isset($_GET['debug']) && $_GET['debug'] == '1') ) && is_dir(__DIR__ . '/includes-dev') ) ? '-dev' : '');
+
 	if( $mode == '-dev' ){
 		
 		ini_set('display_errors', 1);
