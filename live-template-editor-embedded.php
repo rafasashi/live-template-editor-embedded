@@ -33,30 +33,15 @@
 		define('LTPLE_EMBEDDED_SLUG',pathinfo(__FILE__, PATHINFO_FILENAME));
 	}
 	
-	require_once( 'updater.php' );
+	// set auto update from github
 	
-	if (is_admin()) { 
-	
-		$slug = plugin_basename(__FILE__);
+	if(is_admin()){
 		
-		$name = pathinfo( $slug, PATHINFO_FILENAME);
-	
-		new WP_GitHub_Updater(array(
+		require_once( 'BFIGitHubPluginUploader.php' );
 		
-			'slug' 					=> $slug, // this is the slug of your plugin
-			'proper_folder_name' 	=> $name, // this is the name of the folder your plugin lives in
-			'api_url' 				=> 'https://api.github.com/repos/rafasashi/'.$name, // the GitHub API url of your GitHub repo
-			'raw_url' 				=> 'https://raw.github.com/rafasashi/'.$name.'/master', // the GitHub raw url of your GitHub repo
-			'github_url' 			=> 'https://github.com/rafasashi/'.$name, // the GitHub url of your GitHub repo
-			'zip_url' 				=> 'https://github.com/rafasashi/'.$name.'/zipball/master', // the zip url of the GitHub repo
-			'sslverify' 			=> true, // whether WP should check the validity of the SSL cert when getting an update, see https://github.com/jkudish/WordPress-GitHub-Plugin-Updater/issues/2 and https://github.com/jkudish/WordPress-GitHub-Plugin-Updater/issues/4 for details
-			'requires' 				=> '4.6', // which version of WordPress does your plugin require?
-			'tested' 				=> '4.7', // which version of WordPress is your plugin tested up to?
-			'readme' 				=> 'README.md', // which file to use as the readme for the version number
-			'access_token' 			=> '', // Access private repositories by authorizing under Appearance > GitHub Updates when this example plugin is installed
-		));
+		new BFIGitHubPluginUpdater( __FILE__, 'rafasashi', 'live-template-editor-embedded' );
 	}
-	
+
 	// Load plugin class files
 	
 	require_once( 'includes'.$mode.'/class-ltple-embedded.php' );
