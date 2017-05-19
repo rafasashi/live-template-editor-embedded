@@ -1,7 +1,7 @@
 <?php
 /*
  * Plugin Name: Live Template Editor
- * Version: 1.1.0
+ * Version: 1.1.1
  * Plugin URI: https://ltple.recuweb.com
  * Description: Setup your Live Editor customer key to start importing and editing any template directly from your wordpress installation.
  * Author: Rafasashi
