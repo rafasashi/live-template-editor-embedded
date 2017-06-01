@@ -548,6 +548,11 @@ class LTPLE_Embedded {
 			
 			if( $this->userLayerId > 0 ){
 				
+				add_action('after_setup_theme', function(){
+					
+					show_admin_bar(false);
+				}				
+								
 				// get layer content 
 				
 				$resourceUrl = add_query_arg( array(
@@ -698,7 +703,7 @@ class LTPLE_Embedded {
 		return $u;		
 	}
 	
-	function in_array_field($needle, $needle_field, $haystack, $strict = false) { 
+	public function in_array_field($needle, $needle_field, $haystack, $strict = false) { 
 
 		if(!empty($haystack)){
 	

@@ -1,7 +1,7 @@
 <?php
 /*
  * Plugin Name: Live Template Editor
- * Version: 1.1.4
+ * Version: 1.1.5
  * Plugin URI: https://github.com/rafasashi/live-template-editor-embedded
  * Description: Setup your Live Editor customer key to start importing and editing any template directly from your wordpress installation.
  * Author: Rafasashi
