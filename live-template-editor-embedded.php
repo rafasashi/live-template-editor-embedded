@@ -60,12 +60,12 @@
 		
 		$instance = LTPLE_Embedded::instance( __FILE__, $version );
 		
-		if ( is_null( $instance->_dev ) ) {
+		if ( empty( $instance->_dev ) ) {
 			
 			$instance->_dev = $mode;
 		}				
  
-		if ( is_null( $instance->settings ) ) {
+		if ( empty( $instance->settings ) ) {
 			
 			$instance->settings = LTPLE_Embedded_Settings::instance( $instance );
 		}

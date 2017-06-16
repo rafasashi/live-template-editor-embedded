@@ -9,6 +9,17 @@ ob_start();
 wp_head();
 
 $head = ob_get_clean();
+	
+$head = preg_replace( array(
+
+		'/<title(.*?)<\/title>/is',
+		//'/<script(.*?)<\/script>/is',
+		//'/<style(.*?)<\/style>/is',
+		//'/<meta(.*?)>/is',
+		//'/<link(.*?)>/is',
+	), 
+	'', $head
+);
 
 // --------------- footer content -------------------
 
