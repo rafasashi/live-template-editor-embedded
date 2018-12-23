@@ -1,6 +1,6 @@
 <?php
 /*
- * Plugin Name: Live Template Editor
+ * Plugin Name: Live Template Editor Embedded
  * Version: 1.1.5
  * Plugin URI: https://github.com/rafasashi/live-template-editor-embedded
  * Description: Setup your Live Editor customer key to start importing and editing any template directly from your wordpress installation.
@@ -18,16 +18,6 @@
 	
 	if ( ! defined( 'ABSPATH' ) ) exit;
 	
-	$dev_ip = '';
-	$dev_ip = '109.28.69.143';
-
-	$mode = ( ( ($_SERVER['REMOTE_ADDR'] == $dev_ip || ( isset($_SERVER['HTTP_X_FORWARDED_FOR']) && $_SERVER['HTTP_X_FORWARDED_FOR'] == $dev_ip  ) || ( isset($_GET['debug']) && $_GET['debug'] == '1') ) && is_dir(__DIR__ . '/includes-dev') ) ? '-dev' : '');
-
-	if( $mode == '-dev' ){
-		
-		ini_set('display_errors', 1);
-	}
-	
 	if( !defined('LTPLE_EMBEDDED_SLUG') ){
 
 		define('LTPLE_EMBEDDED_SLUG',pathinfo(__FILE__, PATHINFO_FILENAME));
@@ -35,13 +25,13 @@
 
 	// Load plugin class files
 	
-	require_once( 'includes'.$mode.'/class-ltple-embedded.php' );
-	require_once( 'includes'.$mode.'/class-ltple-embedded-settings.php' );
-	require_once( 'includes'.$mode.'/class-ltple-embedded-object.php' );
+	require_once( 'includes/class-ltple-embedded.php' );
+	require_once( 'includes/class-ltple-embedded-settings.php' );
+	require_once( 'includes/class-ltple-embedded-object.php' );
 		
 	// Autoload plugin libraries
 	
-	$lib = glob( __DIR__ . '/includes'.$mode.'/lib/class-*.php');
+	$lib = glob( __DIR__ . '/includes/lib/class-*.php');
 	
 	foreach($lib as $file){
 		
@@ -54,16 +44,11 @@
 	 * @since  1.0.0
 	 * @return object LTPLE_Embedded
 	 */
-	function LTPLE_Embedded ( $version = '1.0.0', $mode = '' ) {
+	function LTPLE_Embedded ( $version = '1.0.0' ) {
 		
 		register_activation_hook( __FILE__, array( 'LTPLE_Embedded', 'install' ) );
 		
-		$instance = LTPLE_Embedded::instance( __FILE__, $version );
-		
-		if ( empty( $instance->_dev ) ) {
-			
-			$instance->_dev = $mode;
-		}				
+		$instance = LTPLE_Embedded::instance( __FILE__, $version );		
  
 		if ( empty( $instance->settings ) ) {
 			
@@ -75,11 +60,4 @@
 	
 	// start plugin
 	
-	if( $mode == '-dev' ){
-		
-		LTPLE_Embedded( '1.1.1', $mode );
-	}
-	else{
-		
-		LTPLE_Embedded( '1.1.0', $mode );
-	}
+	LTPLE_Embedded( '1.1.0' );
